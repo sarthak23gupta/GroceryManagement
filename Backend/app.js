@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const bcrypt = require("bcrypt")
 const cors = require("cors");
 const jwt=require("jsonwebtoken")
+const connectMongo = require('./database/db');
 
 const Grocery = require('./models/Grocery.model');
 const Group = require('./models/Group.model');
@@ -16,6 +17,8 @@ const User = require('./models/User.model');
 const groceryRouter=require('./routes/Grocery.routes');
 const groupRouter=require('./routes/Group.routes');
 const userRouter=require('./routes/User.routes');
+const {swaggerUi, swaggerSpec, swaggerConfig} = require('./swagger/config.swagger')
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // app.use(express.static(path.join(__dirname,'public')))
 app.use(express.json())
