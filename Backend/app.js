@@ -17,8 +17,8 @@ const User = require('./models/User.model');
 const groceryRouter=require('./routes/Grocery.routes');
 const groupRouter=require('./routes/Group.routes');
 const userRouter=require('./routes/User.routes');
-const {swaggerUi, swaggerSpec, swaggerConfig} = require('./swagger/config.swagger')
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// const {swaggerUi, swaggerSpec, swaggerConfig} = require('./swagger/config.swagger')
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // app.use(express.static(path.join(__dirname,'public')))
 app.use(express.json())
@@ -31,7 +31,7 @@ app.use(cors({
 connectMongo().then(()=>{
     app.listen(PORT,()=>{
         console.log(`http://localhost:`+PORT);
-        console.log('http://localhost:'+PORT + `/api-docs`);
+        // console.log('http://localhost:'+PORT + `/api-docs`);
     })
 })
 .catch(err=>{
