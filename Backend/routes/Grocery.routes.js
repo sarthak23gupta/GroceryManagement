@@ -1,10 +1,14 @@
 const express = require('express')
 const Grocery = require('../models/Grocery.model')
+const Group = require('../models/Group.model')
+const authMiddleware = require('../middleware/auth.middleware')
 const router = express.Router()
 
-router.post('/add',async(req,res)=>{
+
+router.post('/add',authMiddleware,async(req,res)=>{
     try {
-        const {item, quantity, units, description, price, group, user} = req.body;
+        const {item, quantity, units, description, price, group} = req.body;
+        const userId = req.user.id;
         let newGrocery = await Grocery.create({
             item:item,
             quantity:quantity,
@@ -12,8 +16,23 @@ router.post('/add',async(req,res)=>{
             description:description,
             price:price,
             group:group,
-            user:user
+            user:userId
         })
+
+        // await Group.findByIdAndUpdate(group, {
+        // $push: { grocery: newGrocery._id }},
+        // {new:true}
+        
+        // // const {item, quantity, units, description, price, group, user} = req.body;
+        // let newGrocery = await Grocery.create({
+        //     item:item,
+        //     quantity:quantity,
+        //     units:units,
+        //     description:description,
+        //     price:price,
+        //     group:group,
+        //     user:user
+        // })
         if(newGrocery)
         {
             return res.status(200).json({

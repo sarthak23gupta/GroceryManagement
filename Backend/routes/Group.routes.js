@@ -205,8 +205,10 @@
 
 const express = require('express')
 const Group = require('../models/Group.model')
+
 const router = express.Router()
 const authMiddleware = require('../middleware/auth.middleware')
+const Grocery = require('../models/Grocery.model')
 
 router.post('/add' , authMiddleware ,async(req,res)=>{
     try {
@@ -254,12 +256,27 @@ router.get('/getAllGroup',authMiddleware,async(req,res)=>{
     try {
         const userId = req.user.id;
         let fetchDataByAllGroup = await Group.find({user:userId}).populate('user','-password')
-        if(fetchDataByAllGroup)
+
+        const groupdIds = fetchDataByAllGroup.map(group=>group._id)
+
+        let fetchAllGroceryGroupWise = await Grocery.find({group:{ $in:groupdIds}}).populate('group');
+
+        const result = fetchDataByAllGroup.map(group=>{
+            return {
+                ...group.toObject(),
+                groceries: fetchAllGroceryGroupWise.filter(
+                    grocery=> grocery.group._id.toString() === group._id.toString()
+                )
+            };
+        })
+
+        // if(fetchDataByAllGroup)
+        if(result)
         {
             return res.status(200).json({
                 success:true,
                 message:"Groups fetched successfully for this user",
-                data:fetchDataByAllGroup
+                data:result
             })
         }
         else
@@ -281,7 +298,7 @@ router.get('/getAllGroup',authMiddleware,async(req,res)=>{
 })
 
 
-router.get('/:id',async(req,res)=>{
+router.get('/:id',authMiddleware,async(req,res)=>{
     try {
         const groupId = req.params.id
         const userId = req.user.id
@@ -310,7 +327,7 @@ router.get('/:id',async(req,res)=>{
     }
 })
 
-router.get('/getAll',async(req,res)=>{
+router.get('/getAll',authMiddleware,async(req,res)=>{
     try {
         let allGroup = await Group.find()
         if(allGroup)
@@ -349,7 +366,7 @@ router.put('/updateGroupName/:id',async(req,res)=>{
             })
         }
 
-        let updateGrpName =await Group.findOne({_id:groupId, user:userId},{name},{new:true}).populate('user','-password')
+        let updateGrpName =await Group.findOneAndUpdate({_id:groupId, user:userId},{name},{new:true}).populate('user','-password')
         if(updateGrpName)
         {
             updateGrpName.name=req.body.name
