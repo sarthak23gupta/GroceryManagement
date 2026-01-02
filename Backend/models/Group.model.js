@@ -10,6 +10,10 @@ const GroupSchema =new mongoose.Schema({
         ref: 'users',
         required: true
     }
+    // grocery:[{
+    //     type:mongoose.Schema.Types.ObjectId,
+    //     ref:'Grocery'
+    // }]
 })
 
 
