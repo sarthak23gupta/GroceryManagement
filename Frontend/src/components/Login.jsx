@@ -1,50 +1,45 @@
-import React, { useState } from 'react';
-import { Navigate, NavLink, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 // import { API_Base_URL } from '../../config/config';
-import { toast } from 'react-toastify';
-import { API_Base_URL } from '../config/config';
-
-
+import { toast } from "react-toastify";
+import { API_Base_URL } from "../config/config";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
     // console.log({ email, password });
-    if(email!=null && password!=null){
+    if (email != null && password != null) {
       fetch(`${API_Base_URL}/user/login`, {
-        method:"POST",
-        headers:{
-          'Content-Type': 'application/json'
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body:JSON.stringify({
-          email:email,
-          password:password,
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          if (data.success) {
+            localStorage.setItem("access_token", data.token);
+            localStorage.setItem("email", email);
+            navigate("/");
+            toast.success("Loggedin Successfully");
+          } else {
+            toast.error(data.msg);
+          }
         })
-      })
-      .then((res)=>res.json())
-      .then((data)=>{
-        console.log(data)
-        if(data.success){
-          localStorage.setItem("access_token", data.token);
-          localStorage.setItem("email", email);
-          navigate("/")
-          toast.success("Loggedin Successfully")
-        }
-        else{
-          toast.error(data.msg)
-        }
-      })
-      .catch((err)=>{
-        toast.error(err.message)
-        // console.log(err.message)
-      })
-
-      
+        .catch((err) => {
+          toast.error(err.message);
+          // console.log(err.message)
+        });
     }
   };
 
@@ -54,7 +49,10 @@ const Login = () => {
         <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="email">
+            <label
+              className="block text-sm font-medium text-gray-600"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -68,7 +66,10 @@ const Login = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="password">
+            <label
+              className="block text-sm font-medium text-gray-600"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
@@ -88,8 +89,11 @@ const Login = () => {
             Login
           </button>
         </form>
-        <p className='text-center'>Don't have account &nbsp;
-          <NavLink to={"/register"} className={"text-blue-500 underline"}>Register </NavLink>
+        <p className="text-center">
+          Don't have account &nbsp;
+          <NavLink to={"/register"} className={"text-blue-500 underline"}>
+            Register{" "}
+          </NavLink>
         </p>
       </div>
     </div>

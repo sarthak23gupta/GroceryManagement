@@ -1,50 +1,48 @@
-import React, { useState } from 'react';
-import {NavLink, useNavigate } from 'react-router-dom';
-import { API_Base_URL } from '../config/config';
-import {toast} from 'react-toastify'
-
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { API_Base_URL } from "../config/config";
+import { toast } from "react-toastify";
 
 const Register = () => {
-  const [username, setUsername] = useState('');
-  const [fullname, setFullname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [contactNo, setContactNo] = useState('');
+  const [username, setUsername] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [contactNo, setContactNo] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle registration logic here
     console.log({ username, fullname, email, password, contactNo });
     fetch(`${API_Base_URL}/user/signup`, {
-      method:"POST",
-      headers:{
-        'Content-Type': 'application/json'
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      body:JSON.stringify({
-        name:fullname,
-        username:username,
-        email:email,
-        password:password,
-        contact:contactNo
+      body: JSON.stringify({
+        name: fullname,
+        username: username,
+        email: email,
+        password: password,
+        contact: contactNo,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.success) {
+          localStorage.setItem("access_token", data.token);
+          navigate("/");
+          toast.success("Account created successfully");
+        } else {
+          toast.error(data.msg);
+        }
       })
-    })
-    .then((res)=>res.json())
-    .then((data)=>{
-      console.log(data)
-      if(data.success){
-        localStorage.setItem("access_token", "Yes")
-        navigate("/")
-        toast.success("Account created successfully")
-      }
-      else{
-        toast.error(data.msg)
-      }
-    })
-    .catch((err)=>{
-      console.log(err.message)
-    })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   return (
@@ -53,7 +51,10 @@ const Register = () => {
         <h2 className="text-2xl font-semibold text-center mb-6">Register</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="username">
+            <label
+              className="block text-sm font-medium text-gray-600"
+              htmlFor="username"
+            >
               Username
             </label>
             <input
@@ -67,7 +68,10 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="fullname">
+            <label
+              className="block text-sm font-medium text-gray-600"
+              htmlFor="fullname"
+            >
               Full Name
             </label>
             <input
@@ -81,7 +85,10 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="email">
+            <label
+              className="block text-sm font-medium text-gray-600"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -95,7 +102,10 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="password">
+            <label
+              className="block text-sm font-medium text-gray-600"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
@@ -109,7 +119,10 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="contactNo">
+            <label
+              className="block text-sm font-medium text-gray-600"
+              htmlFor="contactNo"
+            >
               Contact No.
             </label>
             <input
@@ -128,9 +141,12 @@ const Register = () => {
           >
             Register
           </button>
-        <p className='text-center'>Already have account &nbsp;
-            <NavLink to={"/login"} className={"text-blue-500 underline"}>Login</NavLink>
-        </p>
+          <p className="text-center">
+            Already have account &nbsp;
+            <NavLink to={"/login"} className={"text-blue-500 underline"}>
+              Login
+            </NavLink>
+          </p>
         </form>
       </div>
     </div>
